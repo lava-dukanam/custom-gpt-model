@@ -4,19 +4,54 @@
 This project aims to create a custom GPT model specifically trained for language correction tasks. It can be used to identify and correct grammatical errors, spelling mistakes, and improve overall sentence structure and clarity.
 
 ## Features
-*(Placeholder: Add key features of the model here. E.g., type of errors corrected, languages supported, specific functionalities)*
+- Consolidates multiple feedback texts into a single document.
+- Aligns consolidated text to standard British English, including:
+    - Common spelling corrections (e.g., color -> colour, analyze -> analyse, center -> centre).
+    - Conversion of "-ize" verb endings to "-ise".
+    - Differentiation between "licence" (noun) and "license" (verb) for British English.
 
 ## Getting Started
-*(Placeholder: Provide instructions on how to get the model up and running.)*
 
 ### Prerequisites
-*(Placeholder: List any software, libraries, or API keys needed before installation. E.g., Python 3.8+, specific libraries)*
+*   Python 3.7+
+*   spaCy library: `pip install spacy`
+*   A spaCy English model: `python -m spacy download en_core_web_sm` (or a larger model like `en_core_web_md` for better accuracy).
 
 ### Installation
-*(Placeholder: Provide step-by-step installation instructions. E.g., git clone, pip install -r requirements.txt)*
+1.  Clone the repository:
+    ```bash
+    git clone <your-repository-url>
+    cd <repository-name>
+    ```
+2.  Install dependencies (primarily spaCy as listed above).
 
 ## Usage
-*(Placeholder: Explain how to use the model for language correction. Provide code examples or command-line instructions if applicable.)*
+The primary entry point for demonstration is `language_corrector/main.py`.
+
+To run the demonstration:
+```bash
+python language_corrector/main.py
+```
+This script will:
+1.  Take a sample list of American English feedback strings.
+2.  Consolidate them into a single text.
+3.  Apply British English alignment rules.
+4.  Print the original, consolidated (American), and final (British) versions of the text.
+
+This serves as a basic example of how to use the `consolidate_feedback` and `align_to_british_english` functions from the `src` directory.
+
+## Running Tests
+
+The project includes unit tests for the core functionalities. To run the tests, navigate to the project's root directory and use Python's `unittest` module:
+
+```bash
+python -m unittest discover -s language_corrector/tests -p "test_*.py"
+```
+Alternatively, you can run individual test files:
+```bash
+python -m unittest language_corrector/tests/test_feedback_processor.py
+python -m unittest language_corrector/tests/test_alignment.py
+```
 
 ## Contributing
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
