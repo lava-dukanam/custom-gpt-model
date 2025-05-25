@@ -43,6 +43,55 @@ patterns = [
     {"patterns": [[{"LOWER": "license"}, {"TAG": {"REGEX": "VB.?"}}]] , "attrs": {"LEMMA": "license", "NORM": "license", "TEXT": "license"}}, # Verb form already BrE
     {"patterns": [[{"LOWER": "licence"}, {"TAG": {"REGEX": "VB.?"}}]] , "attrs": {"LEMMA": "license", "NORM": "license", "TEXT": "license"}}, # Verb form as licence (AmE) -> license (BrE verb)
     {"patterns": [[{"LOWER": "license"}, {"TAG": "NN"}]], "attrs": {"LEMMA": "licence", "NORM": "licence", "TEXT": "licence"}}, # Noun form as license (AmE) -> licence (BrE noun)
+
+    # -or to -our
+    {"patterns": [[{"LOWER": "behavior"}]], "attrs": {"LEMMA": "behaviour", "NORM": "behaviour", "TEXT": "behaviour"}},
+    {"patterns": [[{"LOWER": "flavor"}]], "attrs": {"LEMMA": "flavour", "NORM": "flavour", "TEXT": "flavour"}},
+    {"patterns": [[{"LOWER": "humor"}]], "attrs": {"LEMMA": "humour", "NORM": "humour", "TEXT": "humour"}},
+    {"patterns": [[{"LOWER": "labor"}]], "attrs": {"LEMMA": "labour", "NORM": "labour", "TEXT": "labour"}},
+    {"patterns": [[{"LOWER": "neighbor"}]], "attrs": {"LEMMA": "neighbour", "NORM": "neighbour", "TEXT": "neighbour"}},
+    {"patterns": [[{"LOWER": "rumor"}]], "attrs": {"LEMMA": "rumour", "NORM": "rumour", "TEXT": "rumour"}},
+
+    # -er to -re (center already done)
+    {"patterns": [[{"LOWER": "theater"}]], "attrs": {"LEMMA": "theatre", "NORM": "theatre", "TEXT": "theatre"}},
+    {"patterns": [[{"LOWER": "meter"}]], "attrs": {"LEMMA": "metre", "NORM": "metre", "TEXT": "metre"}}, # e.g., parking meter -> parking metre
+    {"patterns": [[{"LOWER": "liter"}]], "attrs": {"LEMMA": "litre", "NORM": "litre", "TEXT": "litre"}},
+
+    # -lling vs -ling (and similar)
+    {"patterns": [[{"LOWER": "traveling"}]], "attrs": {"LEMMA": "travelling", "NORM": "travelling", "TEXT": "travelling"}},
+    {"patterns": [[{"LOWER": "traveler"}]], "attrs": {"LEMMA": "traveller", "NORM": "traveller", "TEXT": "traveller"}},
+    {"patterns": [[{"LOWER": "counseling"}]], "attrs": {"LEMMA": "counselling", "NORM": "counselling", "TEXT": "counselling"}},
+    {"patterns": [[{"LOWER": "counselor"}]], "attrs": {"LEMMA": "counsellor", "NORM": "counsellor", "TEXT": "counsellor"}},
+    {"patterns": [[{"LOWER": "modeling"}]], "attrs": {"LEMMA": "modelling", "NORM": "modelling", "TEXT": "modelling"}},
+    {"patterns": [[{"LOWER": "modeler"}]], "attrs": {"LEMMA": "modeller", "NORM": "modeller", "TEXT": "modeller"}},
+
+    # other common individual words
+    # {"patterns": [[{"LOWER": "program"}], [{"LOWER": {"IN": ["computer", "software", "radio", "tv"]}}]], "attrs": {"LEMMA": "programme", "NORM": "programme", "TEXT": "programme"}}, # program (general) -> programme (BrE for broadcast/events)
+    # Note: "program" in computing usually stays "program" in BrE. This rule is a simple attempt to differentiate.
+    # A more robust way would require more context or a simpler rule to always change it if that's preferred.
+    # For now, this rule attempts to change "computer program", "software program" etc. to "programme"
+    # This might be too aggressive or not what's intended.
+    # A simpler, more common one:
+    {"patterns": [[{"LOWER": "program"}]], "attrs": {"LEMMA": "programme", "NORM": "programme", "TEXT": "programme"}}, # General change, user can refine if "computer program" should stay.
+
+    {"patterns": [[{"LOWER": "dialog"}]], "attrs": {"LEMMA": "dialogue", "NORM": "dialogue", "TEXT": "dialogue"}},
+    {"patterns": [[{"LOWER": "catalog"}]], "attrs": {"LEMMA": "catalogue", "NORM": "catalogue", "TEXT": "catalogue"}},
+    # 'catalogue' verb -ize rule handles this if it was 'catalogize'
+    {"patterns": [[{"LOWER": "analog"}]], "attrs": {"LEMMA": "analogue", "NORM": "analogue", "TEXT": "analogue"}},
+
+    # defense/offense -> defence/offence (nouns)
+    {"patterns": [[{"LOWER": "defense"}, {"TAG": {"IN": ["NN", "NNS"]}}]], "attrs": {"LEMMA": "defence", "NORM": "defence", "TEXT": "defence"}},
+    {"patterns": [[{"LOWER": "offense"}, {"TAG": {"IN": ["NN", "NNS"]}}]], "attrs": {"LEMMA": "offence", "NORM": "offence", "TEXT": "offence"}},
+
+    # grey vs gray
+    {"patterns": [[{"LOWER": "gray"}]], "attrs": {"LEMMA": "grey", "NORM": "grey", "TEXT": "grey"}},
+
+    # judgment -> judgement
+    {"patterns": [[{"LOWER": "judgment"}]], "attrs": {"LEMMA": "judgement", "NORM": "judgement", "TEXT": "judgement"}},
+
+    # check -> cheque (for bank check) - This is context dependent and hard.
+    # A simple rule (might be too broad):
+    {"patterns": [[{"LOWER": "check"}, {"LEMMA": "check"}, {"TAG":"NN"}, {"TEXT": {"REGEX": "^[Cc]heck$"}}]], "attrs": {"LEMMA": "cheque", "NORM": "cheque", "TEXT": "cheque"}},
 ]
 
 # Add patterns to the ruler
@@ -92,3 +141,47 @@ if __name__ == '__main__':
     test_licence_4 = "They licence him to fish here." # BrE verb (should remain)
     corrected_licence_4 = align_to_british_english(test_licence_4)
     print(f"BrE: {test_licence_4} -> BrE: {corrected_licence_4}") # Expected: They licence him to fish here.
+
+    print("\n--- Additional Tests for Refined Patterns ---")
+    test_cases = {
+        "behavior": "The behavior of the animals was strange.",
+        "flavor": "What is your favorite flavor of ice cream?",
+        "humor": "He has a great sense of humor.",
+        "labor": "The labor involved was intensive.",
+        "neighbor": "My neighbor is very friendly.",
+        "rumor": "There's a rumor going around.",
+        "theater": "Let's go to the theater tonight.",
+        "meter": "The parking meter expired.",
+        "liter": "Buy a liter of milk.",
+        "traveling": "He is traveling to France.",
+        "traveler": "She is an experienced traveler.",
+        "counseling": "She is seeking counseling.",
+        "counselor": "He works as a school counselor.",
+        "modeling": "He enjoys modeling clay figures.", # Note: 'modelling' also for fashion
+        "program": "What's the television program tonight?", # -> programme
+        "dialog": "The dialog in the movie was witty.",         # -> dialogue
+        "catalog": "I browsed the store catalog.",        # -> catalogue
+        "analog": "This is an analog recording.",          # -> analogue
+        "defense": "The team's defense was strong.",      # -> defence
+        "offense": "No offense was intended.",            # -> offence
+        "gray": "The sky was gray.",                      # -> grey
+        "judgment": "His judgment was sound.",              # -> judgement
+        "check": "I need to write a check for the rent.", # -> cheque (context dependent)
+        "check a box": "Please check this box.", # -> check (should remain)
+        "organize program": "We need to organize the computer program installation.", # -> organise programme (testing interaction)
+        "realize theater program": "I realize the theater program is new." # -> realise theatre programme
+    }
+
+    for key, american_text in test_cases.items():
+        british_text = align_to_british_english(american_text)
+        print(f"Test '{key}':")
+        print(f"  AmE: {american_text}")
+        print(f"  BrE: {british_text}\n")
+
+    # Test for program (computing context, should ideally remain 'program')
+    # The current general rule will change it to 'programme'.
+    # This highlights the need for more sophisticated context handling for some words.
+    computing_program_test = "The computer program is efficient."
+    print(f"Test 'computing program':")
+    print(f"  AmE: {computing_program_test}")
+    print(f"  BrE (current general rule): {align_to_british_english(computing_program_test)}\n")

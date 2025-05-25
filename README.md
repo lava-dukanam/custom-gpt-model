@@ -9,13 +9,21 @@ This project aims to create a custom GPT model specifically trained for language
     - Common spelling corrections (e.g., color -> colour, analyze -> analyse, center -> centre).
     - Conversion of "-ize" verb endings to "-ise".
     - Differentiation between "licence" (noun) and "license" (verb) for British English.
+- Processes feedback from an Excel file (`input_feedback.xlsx`):
+    - Reads data from columns 'Reviewer', 'Standard Number', and 'Feedback'.
+    - Groups feedback by 'Reviewer' and 'Standard Number'.
+    - Consolidates and aligns feedback for each group.
+    - Writes processed data, including aggregated values for other columns, to `processed_feedback.xlsx`.
 
 ## Getting Started
 
 ### Prerequisites
 *   Python 3.7+
-*   spaCy library: `pip install spacy`
 *   A spaCy English model: `python -m spacy download en_core_web_sm` (or a larger model like `en_core_web_md` for better accuracy).
+*   Other dependencies listed in `requirements.txt`. Install them using:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ### Installation
 1.  Clone the repository:
@@ -23,22 +31,31 @@ This project aims to create a custom GPT model specifically trained for language
     git clone <your-repository-url>
     cd <repository-name>
     ```
-2.  Install dependencies (primarily spaCy as listed above).
+2.  Install dependencies by running `pip install -r requirements.txt` (after ensuring you have Python and have downloaded the spaCy model).
 
 ## Usage
-The primary entry point for demonstration is `language_corrector/main.py`.
 
-To run the demonstration:
-```bash
-python language_corrector/main.py
-```
-This script will:
-1.  Take a sample list of American English feedback strings.
-2.  Consolidate them into a single text.
-3.  Apply British English alignment rules.
-4.  Print the original, consolidated (American), and final (British) versions of the text.
+This project processes feedback from an Excel file to consolidate it and align it to British English.
 
-This serves as a basic example of how to use the `consolidate_feedback` and `align_to_british_english` functions from the `src` directory.
+1.  **Prepare your input file:**
+    *   Create an Excel file named `input_feedback.xlsx` in the `language_corrector` directory (the same directory as `main.py`).
+    *   Ensure your feedback data is on the **first sheet** of the Excel file.
+    *   The script expects to find data in the following columns (it will try to find them by these names first, then by fixed positions B, F, I if names are not found):
+        *   **Reviewer**: The name or identifier of the reviewer (tries 'Reviewer', then Column B).
+        *   **Standard Number**: The standard number associated with the feedback (tries 'Standard Number', then Column F).
+        *   **Feedback**: The actual feedback text (tries 'Feedback', then Column I).
+    *   Other columns will be carried over and their values aggregated if multiple rows are consolidated for the same Reviewer/Standard Number.
+
+2.  **Run the processing script:**
+    Navigate to the `language_corrector` directory in your terminal and run:
+    ```bash
+    python main.py
+    ```
+
+3.  **Output:**
+    *   A new Excel file named `processed_feedback.xlsx` will be created in the `language_corrector` directory.
+    *   This file will contain the processed data, with feedback consolidated and aligned to British English in the 'Feedback' column (or original Column I). Other columns will have their data appropriately aggregated.
+    *   The script will print status messages to the console, including any errors encountered (e.g., if the input file is not found or columns are not as expected).
 
 ## Running Tests
 
