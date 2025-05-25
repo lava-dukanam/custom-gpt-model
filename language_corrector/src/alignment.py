@@ -4,24 +4,24 @@ from spacy.pipeline import AttributeRuler
 # Load a small English spaCy model
 nlp = spacy.load("en_core_web_sm")
 
-# Initialize the AttributeRuler and add it to the pipeline
-# Add it before the lemmatizer (if present) and before NER to ensure
-# subsequent components see the modified token attributes.
-# Based on default pipeline components, 'tagger' is a good component to add it after,
-# and 'parser' or 'ner' are good components to add it before.
-# If lemmatizer is not explicitly in the pipeline, spaCy might add it based on model.
-# We'll add it before 'parser' to be safe.
-if "lemmatizer" in nlp.pipe_names:
-    ruler = nlp.add_pipe("attribute_ruler", before="lemmatizer")
-else:
-    # If no lemmatizer, try before parser or ner. Defaulting to before parser.
-    if 'parser' in nlp.pipe_names:
+# Initialize the AttributeRuler
+if not nlp.has_pipe("attribute_ruler"):
+    print("Adding 'attribute_ruler' to the pipeline.")
+    # Add it before the lemmatizer (if present) and before NER to ensure
+    # subsequent components see the modified token attributes.
+    # Based on default pipeline components, 'tagger' is a good component to add it after,
+    # and 'parser' or 'ner' are good components to add it before.
+    if "lemmatizer" in nlp.pipe_names:
+        ruler = nlp.add_pipe("attribute_ruler", before="lemmatizer")
+    elif 'parser' in nlp.pipe_names: # If no lemmatizer, try before parser
         ruler = nlp.add_pipe("attribute_ruler", before="parser")
-    elif 'ner' in nlp.pipe_names:
+    elif 'ner' in nlp.pipe_names: # If no parser, try before ner
         ruler = nlp.add_pipe("attribute_ruler", before="ner")
-    else:
+    else: # If none of the preferred components are present, add it last or first
         ruler = nlp.add_pipe("attribute_ruler")
-
+else:
+    print("'attribute_ruler' already in pipeline. Getting a reference to it.")
+    ruler = nlp.get_pipe("attribute_ruler")
 
 # Define patterns for British English spelling alignment
 # The attributes to set are:
